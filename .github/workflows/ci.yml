@@ -2,36 +2,29 @@ name: CI Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - dev
-      - fix
-
+    branches: [ main, dev, fix ]
   pull_request:
-    branches:
-      - main
-      - dev
+    branches: [ main, dev ]
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
+      - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Install Google Chrome
-        uses: browser-actions/setup-chrome@v1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
-      - name: Run tests
+      - name: Run UI tests
         run: npm test
